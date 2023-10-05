@@ -80,5 +80,5 @@ queuing the entry if the hashes are different.
 
 # References
 
-[1] <https://vinylanddata.blogspot.com/2017/11/how-sparse-is-discogs.html>
-[2] <https://data.discogs.com/>
+1. <https://vinylanddata.blogspot.com/2017/11/how-sparse-is-discogs.html>
+2. <https://data.discogs.com/>
