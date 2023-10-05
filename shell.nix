@@ -9,7 +9,6 @@ let
   my-python = pkgs.python3.withPackages (p: with p; [
     click
     dulwich
-    easyocr
     defusedxml
     pyyaml
     redis
