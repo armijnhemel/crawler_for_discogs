@@ -23,9 +23,41 @@ the release itself, or irrelevant to data quality:
 * `estimated_weight`
 * `videos`
 
-and then it is sorted.
+The JSON is then sorted, written to a file and added to a Git repository.
 
-After that it is written to a file and added to a Git repository.
+Processing scripts could then take the data in the Git repository and process
+the data.
+
+### Why store in Git?
+
+There are a few good reasons to store files in Git, instead of in a regular
+database:
+
+1. it is distributed: multiple clients can download and manipulate files at
+   the same time
+2. processing scripts only need to keep track of the latest revision they
+   looked at and then find out which of the files have been changed (as this
+   will be the releases that were changed), for example using:
+   `$ git diff --name-only <REVISION>..HEAD`
+
+#### Git drawback: race conditions
+
+Git works fine, as long as the workers are not working on the same files at
+the same time. There are a few ways that this can be prevented, for example by
+segmenting the data set and having different crawlers focus on a single segment
+(for example: a block of 2 million releases), by working in branches and
+periodically merging these branches, or by making sure that the same release
+isn't scheduled immediately again after it has been removed from the queue, and
+by forcing clients to make sure that their copy is up to date before adding
+something. This doesn't necessarily prevent race conditions but it will make
+it easier to manage.
+
+#### Git drawback: size
+
+The Discogs database consists of many files (more than 28M if artists, labels
+and other data is also taken into account). There might be performance issues.
+A solution could be to use Git submodules and use multiple repositories instead
+of a single one.
 
 ## Preseeding the queue
 
