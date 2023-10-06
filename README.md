@@ -92,7 +92,7 @@ processed is very big (at least 12 GiB gzip compressed) so it is important to
 take memory usage into account: creating a full DOM representation in memory is
 impossible. A first version of the splitter script used `xml.dom.pulldom` which
 has very low memory usage but which isn't the fastest. The current version
-uses `xml.etree.ElementTree` which uses more memory, but which is a lot faster.
+uses `xml.etree.ElementTree` which is a lot faster.
 
 What is important to know is that the XML that is used for computing the hash
 is the XML as written by `ElementTree's` `tostring()` method. It is *not* byte
