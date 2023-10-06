@@ -30,7 +30,7 @@ def main(datadump, result_file):
                         res.write(f"{release_id}\t{release_hash}\n")
 
     except Exception as e:
-        print("Cannot open dump file", e, file=sys.stderr)
+        print("Cannot process dump file", e, file=sys.stderr)
         sys.exit(1)
 
 
