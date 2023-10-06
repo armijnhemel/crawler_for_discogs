@@ -79,13 +79,11 @@ queuing the entry if the hashes are different.
 
 The script `discogs_xml_split.py` can process files and writes the release
 number and SHA1 in a tab separated format (release number and SHA1 hash) to an
-output file:
+output file, for example:
 
 ```
 $ python3 discogs_xml_split.py -d ~/discogs-data/discogs_20231001_releases.xml.gz -r /tmp/september2023-hashes.txt
 ```
-
-The output should be redirected to a file which can then be processed further.
 
 It should be noted that the current implementation will run for quite some
 time. As this script is typically only run once per month this is acceptable.
