@@ -8,11 +8,11 @@
 
 import gzip
 import hashlib
-
-import xml.dom.pulldom
+import sys
 
 import click
-import defusedxml.pulldom
+
+import defusedxml.ElementTree as et
 
 
 @click.command(short_help='process BANG result files and output ELF graphs')
@@ -22,15 +22,11 @@ def main(datadump, result_file):
 
     try:
         with gzip.open(datadump, 'rb') as dumpfile:
-            doc = defusedxml.pulldom.parse(dumpfile)
             with open(result_file, 'w') as res:
-                for event, node in doc:
-                    if event == xml.dom.pulldom.START_ELEMENT and node.tagName == 'release':
-                        release_id = node.getAttribute('id')
-                        doc.expandNode(node)
-
-                        # compute a SHA1 hash of the XML
-                        release_hash = hashlib.sha1(node.toxml().encode()).hexdigest()
+                for event, element in et.iterparse(dumpfile):
+                    if element.tag == 'release':
+                        release_id = element.attrib['id']
+                        release_hash = hashlib.sha1(et.tostring(element)).hexdigest()
                         res.write(f"{release_id}\t{release_hash}\n")
 
     except Exception as e:
