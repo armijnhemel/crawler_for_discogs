@@ -31,9 +31,9 @@ def main(datadump):
                     release_id = node.getAttribute('id')
                     doc.expandNode(node)
 
-                    # compute a SHA256 hash of the XML
-                    sha256 = hashlib.sha256(node.toxml().encode()).hexdigest()
-                    print(release_id, sha256)
+                    # compute a SHA1 hash of the XML
+                    release_hash = hashlib.sha1(node.toxml().encode()).hexdigest()
+                    print(release_id, release_hash)
 
     except Exception as e:
         print("Cannot open dump file", e, file=sys.stderr)
