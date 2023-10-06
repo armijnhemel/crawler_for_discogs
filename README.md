@@ -87,8 +87,21 @@ $ python3 discogs_xml_split.py -d ~/discogs-data/discogs_20231001_releases.xml.g
 ```
 
 The output should be redirected to a file which can then be processed further.
-It should be noted that the current implementation will run for many hours. As
-this script is typically only run once per month this is acceptable.
+
+It should be noted that the current implementation will run for quite some
+time. As this script is typically only run once per month this is acceptable.
+Optimizations are likely possible but remember that the XML file that is
+processed is very big (at least 12 GiB gzip compressed) so it is important to
+take memory usage into account: creating a full DOM representation in memory is
+impossible. A first version of the splitter script used `xml.dom.pulldom` which
+has very low memory usage but which isn't the fastest. The current version
+uses `xml.etree.ElementTree` which uses more memory, but which is a lot faster.
+
+What is important to know is that the XML that is used for computing the hash
+is the XML as written by `ElementTree's` `tostring()` method. It is *not* byte
+for byte identical to the original XML. This means that when comparing the
+output of two different Discogs dump files they should be prcessed with the
+same script using the same libraries.
 
 # References
 
