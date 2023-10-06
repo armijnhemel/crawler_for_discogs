@@ -77,6 +77,18 @@ haven't been changed are queued again. This can for example be done by
 computing a hash of the XML data and comparing it to a stored hash and only
 queuing the entry if the hashes are different.
 
+The script `discogs_xml_split.py` can process files and writes the release
+number and SHA1 in a tab separated format (release number and SHA1 hash) to an
+output file:
+
+```
+$ python3 discogs_xml_split.py -d ~/discogs-data/discogs_20231001_releases.xml.gz -r /tmp/september2023-hashes.txt
+....
+```
+
+The output should be redirected to a file which can then be processed further.
+It should be noted that the current implementation will run for many hours. As
+this script is typically only run once per month this is acceptable.
 
 # References
 
