@@ -6,10 +6,12 @@
 # Licensed under Apache 2.0, see LICENSE file for details
 
 import click
+import dulwich
+import redis
 
 
-@click.command(short_help='process BANG JSON result file and output YARA')
-@click.option('--config-file', '-c', required=True, help='configuration file', type=click.File('r'))
+@click.command(short_help='Continuously grab data from the Discogs API and store in Git')
+@click.option('--config-file', '-c', required=True, help='configuration file (YAML)', type=click.File('r'))
 def main(config_file):
     pass
 
