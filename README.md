@@ -86,7 +86,17 @@ $ python3 discogs_xml_split.py -d ~/discogs-data/discogs_20231001_releases.xml.g
 ```
 
 It should be noted that the current implementation will run for quite some
-time. As this script is typically only run once per month this is acceptable.
+time:
+
+```
+$ time python3 discogs_xml_split.py -d ~/discogs-data/discogs_20231001_releases.xml.gz -r /tmp/discogs_september2023_hashes.txt
+
+real	186m42.637s
+user	185m53.505s
+sys	0m12.630s
+```
+
+As this script is typically only run once per month this is acceptable.
 Optimizations are likely possible but remember that the XML file that is
 processed is very big (at least 12 GiB gzip compressed) so it is important to
 take memory usage into account: creating a full DOM representation in memory is
