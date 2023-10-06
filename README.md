@@ -83,7 +83,6 @@ output file:
 
 ```
 $ python3 discogs_xml_split.py -d ~/discogs-data/discogs_20231001_releases.xml.gz -r /tmp/september2023-hashes.txt
-....
 ```
 
 The output should be redirected to a file which can then be processed further.
