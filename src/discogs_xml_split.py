@@ -28,6 +28,7 @@ def main(datadump, result_file):
                         release_id = element.attrib['id']
                         release_hash = hashlib.sha1(et.tostring(element)).hexdigest()
                         res.write(f"{release_id}\t{release_hash}\n")
+                        element.clear()
 
     except Exception as e:
         print("Cannot process dump file", e, file=sys.stderr)
