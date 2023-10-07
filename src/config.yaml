@@ -1,0 +1,14 @@
+---
+general:
+  # Threads to use. 0 = maximum (dependent on system)
+  # threads: 0
+  verbose: true
+
+  # Setting to indicate whether an error should be fatal
+  # default: true
+  error_fatal: true
+fields:
+  remove:
+    - num_for_sale
+    - lowest_price
+    - estimated_weight
