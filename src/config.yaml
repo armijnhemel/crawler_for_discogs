@@ -16,3 +16,5 @@ fields:
     - community/have
     - community/want
     - community/rating
+api:
+  rate_limit_backoff: 5

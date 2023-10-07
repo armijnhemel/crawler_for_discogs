@@ -11,6 +11,7 @@ import sys
 import click
 import dulwich
 import redis
+import requests
 
 # import YAML module for the configuration
 from yaml import load
@@ -19,6 +20,7 @@ try:
     from yaml import CLoader as Loader
 except ImportError:
     from yaml import Loader
+
 
 # process json: sort, cleanup
 def process_json(json_data, removes):
@@ -31,6 +33,8 @@ def process_json(json_data, removes):
                 del json_data[r]
         except KeyError:
             pass
+
+    # write to a file in the correct Git directory
     print(json.dumps(json_data, sort_keys=True, indent=4))
 
 @click.command(short_help='Continuously grab data from the Discogs API and store in Git')
@@ -54,7 +58,6 @@ def main(config_file, verbose):
             json_data = json.load(json_file)
             process_json(json_data, removes)
     except Exception as e:
-        print(e)
         pass
 
 
