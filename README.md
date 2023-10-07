@@ -11,11 +11,15 @@ fetched by workers.
 
 As soon as a worker has fetched a release number it downloads the relevant
 data via the Discogs API in JSON format. The JSON data is then cleaned up to
-remove irrelevant data such as:
+remove data that is not directly related to the data describing a release:
 
 * `num_for_sale`
 * `lowest_price`
-* some fields in the `community` field
+* some fields in the `community` field which are also available via another
+  API endpoint:
+  * `have`
+  * `want`
+  * `rating`
 
 and possibly some other fields in the data as well that are not relevant to
 the release itself, or irrelevant to data quality:
@@ -26,7 +30,12 @@ the release itself, or irrelevant to data quality:
 The JSON is then sorted, written to a file and added to a Git repository.
 
 Processing scripts could then take the data in the Git repository and process
-the data.
+the data. Some potential uses:
+
+* sanity checking to see if the data is actually correct (are the right fields
+  used, is there potentially data missing, and so on)
+* notification scripts for a certain artist, label, country, and so on, either
+  per update or as a "daily digest"
 
 ### Why store in Git?
 
@@ -59,7 +68,7 @@ and other data is also taken into account). There might be performance issues.
 A solution could be to use Git submodules and use multiple repositories instead
 of a single one.
 
-## Preseeding the queue
+## Preseeding the crawling queue
 
 Not every number is in use, and some of the release numbers have disappeared
 or were never used[1]. Adding every number (from 1 to the latest one known) to
