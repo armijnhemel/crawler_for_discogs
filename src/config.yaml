@@ -12,3 +12,7 @@ fields:
     - num_for_sale
     - lowest_price
     - estimated_weight
+    - videos
+    - community/have
+    - community/want
+    - community/rating
