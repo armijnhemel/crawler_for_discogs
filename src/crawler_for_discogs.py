@@ -6,10 +6,12 @@
 # Licensed under Apache 2.0, see LICENSE file for details
 
 import json
+import pathlib
 import sys
 
 import click
 import dulwich
+import dulwich.repo
 import redis
 import requests
 
@@ -23,7 +25,7 @@ except ImportError:
 
 
 # process json: sort, cleanup
-def process_json(json_data, removes):
+def process_json(json_data, removes, git_directory, repo):
     for r in removes:
         try:
             if '/' in r:
@@ -34,15 +36,27 @@ def process_json(json_data, removes):
         except KeyError:
             pass
 
+    json_filename = f"{json_data['id']}.json"
+
     # write to a file in the correct Git directory
-    print(json.dumps(json_data, sort_keys=True, indent=4))
+    with open(git_directory / json_filename, 'w') as json_file:
+        json.dump(json_data, json_file, sort_keys=True, indent=4)
+
+    # add the file and commit
+    # TODO: should be to the object store
+    repo.stage([json_filename])
+    repo.do_commit(b"Add", committer=b"Armijn Hemel <armijn@tjaldur.nl>")
 
 @click.command(short_help='Continuously grab data from the Discogs API and store in Git')
 @click.option('--config-file', '-c', required=True, help='configuration file (YAML)', type=click.File('r'))
 @click.option('-v', '--verbose', is_flag=True, help='Enable debug logging')
-def main(config_file, verbose):
+@click.option('-g', '--git', help='Location of Git repository (override config)', type=click.Path('exists=True', path_type=pathlib.Path))
+def main(config_file, verbose, git):
     # read the configuration file. This is in YAML format
     removes = []
+
+    discogs_git = None
+
     try:
         config = load(config_file, Loader=Loader)
         if 'fields' in config:
@@ -53,11 +67,28 @@ def main(config_file, verbose):
         print(f"Cannot open configuration file, exiting, {e}", file=sys.stderr)
         sys.exit(1)
 
+    # override the configuration using commandline options
+    if git is not None:
+        discogs_git = git
+
+    if discogs_git is None:
+        print(f"Git repository not supplied in either configuration or command line, exiting, {e}", file=sys.stderr)
+        sys.exit(1)
+
+    # verify there is a valid Git repository
     try:
-        with open('/home/armijn/discogs-data/json/24/24639869.json', 'rb') as json_file:
+        repo = dulwich.repo.Repo(discogs_git)
+    except dulwich.errors.NotGitRepository:
+        print(f"{git} is not a valid Git repository, exiting", file=sys.stderr)
+        sys.exit(1)
+
+    try:
+        #with open('/home/armijn/discogs-data/json/24/24639869.json', 'rb') as json_file:
+        with open('/home/armijn/discogs-data/json/24/24640241.json', 'rb') as json_file:
             json_data = json.load(json_file)
-            process_json(json_data, removes)
+            process_json(json_data, removes, discogs_git, repo)
     except Exception as e:
+        print(e)
         pass
 
 
