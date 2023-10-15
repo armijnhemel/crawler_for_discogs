@@ -11,7 +11,7 @@ import sys
 
 import click
 import dulwich
-import dulwich.repo
+import dulwich.porcelain
 import redis
 import requests
 
@@ -23,6 +23,8 @@ try:
 except ImportError:
     from yaml import Loader
 
+
+AUTHOR = "Discogs Crawler <armijn@tjaldur.nl>"
 
 # process json: sort, cleanup
 def process_json(json_data, removes, git_directory, repo):
@@ -37,15 +39,29 @@ def process_json(json_data, removes, git_directory, repo):
             pass
 
     json_filename = f"{json_data['id']}.json"
+    new_file = True
+
+    # first check if the file has changed. If not, then don't add
+    # the file. Git has some intelligence built-in which prevents
+    # unchanged files to be committed again, which Dulwich
+    # doesn't seem to implement.
+    if (git_directory / json_filename).exists():
+        new_file = False
+        with open(git_directory / json_filename, 'r') as json_file:
+            existing_json = json.load(json_file)
+            if existing_json == json_data:
+                return
 
     # write to a file in the correct Git directory
     with open(git_directory / json_filename, 'w') as json_file:
         json.dump(json_data, json_file, sort_keys=True, indent=4)
 
     # add the file and commit
-    # TODO: should be to the object store
-    repo.stage([json_filename])
-    repo.do_commit(b"Add", committer=b"Armijn Hemel <armijn@tjaldur.nl>")
+    dulwich.porcelain.add(repo, git_directory / json_filename)
+    if new_file:
+        dulwich.porcelain.commit(repo, f"Add {json_data['id']}", committer=AUTHOR, author=AUTHOR)
+    else:
+        dulwich.porcelain.commit(repo, f"Update {json_data['id']}", committer=AUTHOR, author=AUTHOR)
 
 @click.command(short_help='Continuously grab data from the Discogs API and store in Git')
 @click.option('--config-file', '-c', required=True, help='configuration file (YAML)', type=click.File('r'))
@@ -77,14 +93,14 @@ def main(config_file, verbose, git):
 
     # verify there is a valid Git repository
     try:
-        repo = dulwich.repo.Repo(discogs_git)
+        repo = dulwich.porcelain.open_repo(discogs_git)
     except dulwich.errors.NotGitRepository:
         print(f"{git} is not a valid Git repository, exiting", file=sys.stderr)
         sys.exit(1)
 
     try:
-        #with open('/home/armijn/discogs-data/json/24/24639869.json', 'rb') as json_file:
-        with open('/home/armijn/discogs-data/json/24/24640241.json', 'rb') as json_file:
+        #with open('/home/armijn/discogs-data/json/24/24640241.json', 'rb') as json_file:
+        with open('/home/armijn/discogs-data/json/24/24639869.json', 'rb') as json_file:
             json_data = json.load(json_file)
             process_json(json_data, removes, discogs_git, repo)
     except Exception as e:
