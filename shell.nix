@@ -10,6 +10,7 @@ let
     click
     dulwich
     defusedxml
+    hiredis
     pyyaml
     redis
     requests
