@@ -18,3 +18,5 @@ fields:
     - community/rating
 api:
   rate_limit_backoff: 5
+  user: test
+  password: test
