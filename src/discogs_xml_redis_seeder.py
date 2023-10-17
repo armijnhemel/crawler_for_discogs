@@ -37,7 +37,7 @@ def main(new_result_file, old_result_file):
         # check if Redis is running
         redis_client.ping()
     except redis.exceptions.ConnectionError as e:
-        print("Cannot connec to Redis server", e, file=sys.stderr)
+        print("Cannot connect to Redis server", e, file=sys.stderr)
         sys.exit(1)
 
     old_releases = set()
