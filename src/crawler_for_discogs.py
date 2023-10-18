@@ -41,7 +41,7 @@ REDIS_LISTS = {1: 'discogs-1M', 2: 'discogs-2M', 3: 'discogs-3M',
                37: 'discogs-37M', 38: 'discogs-38M', 39: 'discogs-39M',
 }
 
-# process json: sort, cleanup
+# process json: cleanup, sort, compare to already stored version
 def process_json(json_data, removes, git_directory, repo, remove_thumbnails=True):
     for r in removes:
         try:
@@ -124,8 +124,8 @@ def process_json(json_data, removes, git_directory, repo, remove_thumbnails=True
 @click.option('-g', '--git', help='Location of Git repository (override config)', type=click.Path('exists=True', path_type=pathlib.Path))
 @click.option('-u', '--user', help='User name (override config)')
 @click.option('-t', '--token', help='Token (override config)')
-@click.option('-l', '--list', 'redis_list', type=click.IntRange(min=1, max=39), required=True, help='Redis list number (1-39)')
-def main(config_file, verbose, git, user, token, redis_list):
+@click.option('-l', '--list', 'redis_list_number', type=click.IntRange(min=1, max=39), required=True, help='Redis list number (1-39)')
+def main(config_file, verbose, git, user, token, redis_list_number):
     # read the configuration file. This is in YAML format
     removes = []
 
@@ -191,7 +191,13 @@ def main(config_file, verbose, git, user, token, redis_list):
                'Authorization': f'Discogs token={token}'
               }
 
-    redis_list = REDIS_LISTS[redis_list]
+    redis_list = REDIS_LISTS[redis_list_number]
+
+    discogs_git_directory = discogs_git / str(redis_list_number)
+    if discogs_git_directory.exists():
+        pass
+    else:
+        discogs_git_directory.mkdir()
 
     current_identifier = None
 
@@ -257,7 +263,7 @@ def main(config_file, verbose, git, user, token, redis_list):
                 rate_limit_backoff = 5
 
             json_data = r.json()
-            process_json(json_data, removes, discogs_git, repo)
+            process_json(json_data, removes, discogs_git_directory, repo)
             current_identifier = None
         except Exception as e:
             print(e)
