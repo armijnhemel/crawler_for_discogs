@@ -230,7 +230,7 @@ def main(config_file, verbose, git, user, token, redis_list_number):
                     print(f"Denied by Discogs, exiting", file=sys.stderr)
                     sys.exit(1)
                 elif r.status_code == 404:
-                    # TODO: record
+                    # TODO: record discogs entries that have been removed
                     pass
                 elif r.status_code == 429:
                     if 'Retry-After' in r.headers:
@@ -269,7 +269,7 @@ def main(config_file, verbose, git, user, token, redis_list_number):
             process_json(json_data, removes, discogs_git_directory, repo)
             current_identifier = None
         except Exception as e:
-            print(e)
+            #print(e)
             pass
 
 
