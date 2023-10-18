@@ -191,6 +191,9 @@ def main(config_file, verbose, git, user, token, redis_list_number):
                'Authorization': f'Discogs token={token}'
               }
 
+    # use a (somewhat) exponential backoff in case too many requests have been made
+    rate_limit_backoff = 5
+
     redis_list = REDIS_LISTS[redis_list_number]
 
     discogs_git_directory = discogs_git / str(redis_list_number)
