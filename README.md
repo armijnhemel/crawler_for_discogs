@@ -26,8 +26,10 @@ the release itself, or irrelevant to data quality:
 
 * `estimated_weight`
 * `videos`
+* `thumbnail_url` (in various fields)
 
-The JSON is then sorted, written to a file and added to a Git repository.
+The JSON is then sorted, written to a file and added to a Git repository if the
+(cleaned up) contents have changed, or if the release is new.
 
 Processing scripts could then take the data in the Git repository and process
 the data. Some potential uses:
@@ -118,6 +120,59 @@ is the XML as written by `ElementTree's` `tostring()` method. It is *not* byte
 for byte identical to the original XML. This means that when comparing the
 output of two different Discogs dump files they should be prcessed with the
 same script using the same libraries.
+
+The next step is actually seeding the releases that need to be crawled into
+the Redis queue. This can be done using the `discogs_xml_redis_seeder.py`
+script, for example:
+
+```
+$ python3 discogs_xml_redis_seeder.py -n /tmp/discogs_september2023_hashes.txt
+```
+
+The script takes two parameters (one optional):
+
+1. path to list of new release number/hash combinations (mandatory)
+2. path to list of already known (old) release number/hash
+   combinations (optional)
+
+Both lists should be generated with `discogs_xml_split.py`. If both parameters
+are provided only release numbers in the new list that were either added or
+changed (different hash) are written to Redis. If only one parameter is
+provided all release numbers from the list are written to Redis.
+
+To make it easier to distribute the work across multiple workers the releases
+numbers are put in different lists in Redis and a crawler will only look at
+a single list.
+
+## Crawling the data
+
+The `crawler_for_discogs.py` continuously grabs release numbers from a Redis
+queue, downloads the JSON data using the Discogs API, removes unnecessary
+elements and stores the data in a Git repository if the data is new or has
+changed.
+
+Each crawler is configured to use a specific Redis list. The seeder script
+puts releases into specific lists depending on the number: the first 1M
+releases are stored in a list, the next 1M releases are stored in the next
+list, and so on.
+
+Example:
+
+```
+$ python3 crawler_for_discogs.py -c config.yaml -u bla -t bla-token -g /tmp/git -l 14
+```
+
+The parameters are:
+
+* configuration file (in YAML)
+* Discogs user name (if not provided in the configuration file)
+* Discogs token (if not provided in the configuration file)
+* path to Git repository (if not provided in the configration file)
+* Redis list number (1-39)
+
+Currently both the Git repository and the Redis queue are assumed to be local
+but this will eventually be changed so the crawlers can be distributed and
+using different locations for crawling.
 
 # References
 
