@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-# Copyright 2023 - Armijn Hemel
+# Copyright 2023-2024 - Armijn Hemel
 
 import gzip
 import hashlib
@@ -15,9 +15,11 @@ import click
 import defusedxml.ElementTree as et
 
 
-@click.command(short_help='process BANG result files and output ELF graphs')
-@click.option('--datadump', '-d', 'datadump', required=True, help='discogs data dump file', type=click.Path(exists=True))
-@click.option('--result-file', '-r', 'result_file', required=True, help='file to write results to', type=click.Path())
+@click.command(short_help='process Discogs XML file and compute SHA1 hashes for each release')
+@click.option('--datadump', '-d', 'datadump', required=True, help='discogs data dump file',
+              type=click.Path(exists=True))
+@click.option('--result-file', '-r', 'result_file', required=True, help='file to write results to',
+              type=click.Path())
 def main(datadump, result_file):
 
     try:
