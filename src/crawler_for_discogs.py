@@ -4,6 +4,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 # Licensed under Apache 2.0, see LICENSE file for details
+# Copyright 2023-2024 - Armijn Hemel
 
 import json
 import pathlib
@@ -57,40 +58,40 @@ def process_json(json_data, removes, git_directory, repo, remove_thumbnails=True
         for artist in json_data['artists']:
             try:
                 del artist['thumbnail_url']
-            except KeyError as e:
+            except KeyError:
                 pass
         for artist in json_data['extraartists']:
             try:
                 del artist['thumbnail_url']
-            except KeyError as e:
+            except KeyError:
                 pass
         for company in json_data['companies']:
             try:
                 del company['thumbnail_url']
-            except KeyError as e:
+            except KeyError:
                 pass
         for label in json_data['labels']:
             try:
                 del label['thumbnail_url']
-            except KeyError as e:
+            except KeyError:
                 pass
         for label in json_data['series']:
             try:
                 del label['thumbnail_url']
-            except KeyError as e:
+            except KeyError:
                 pass
         for track in json_data['tracklist']:
             if 'artists' in track:
                 for artist in track['artists']:
                     try:
                         del artist['thumbnail_url']
-                    except KeyError as e:
+                    except KeyError:
                         pass
             if 'extraartists' in track:
                 for artist in track['extraartists']:
                     try:
                         del artist['thumbnail_url']
-                    except KeyError as e:
+                    except KeyError:
                         pass
 
     json_filename = f"{json_data['id']}.json"
@@ -119,12 +120,15 @@ def process_json(json_data, removes, git_directory, repo, remove_thumbnails=True
         dulwich.porcelain.commit(repo, f"Update {json_data['id']}", committer=AUTHOR, author=AUTHOR)
 
 @click.command(short_help='Continuously grab data from the Discogs API and store in Git')
-@click.option('--config-file', '-c', required=True, help='configuration file (YAML)', type=click.File('r'))
+@click.option('--config-file', '-c', required=True, help='configuration file (YAML)',
+              type=click.File('r'))
 @click.option('-v', '--verbose', is_flag=True, help='Enable debug logging')
-@click.option('-g', '--git', help='Location of Git repository (override config)', type=click.Path('exists=True', path_type=pathlib.Path))
+@click.option('-g', '--git', help='Location of Git repository (override config)',
+              type=click.Path('exists=True', path_type=pathlib.Path))
 @click.option('-u', '--user', help='User name (override config)')
 @click.option('-t', '--token', help='Token (override config)')
-@click.option('-l', '--list', 'redis_list_number', type=click.IntRange(min=1, max=39), required=True, help='Redis list number (1-39)')
+@click.option('-l', '--list', 'redis_list_number', type=click.IntRange(min=1, max=39),
+              required=True, help='Redis list number (1-39)')
 def main(config_file, verbose, git, user, token, redis_list_number):
     # read the configuration file. This is in YAML format
     removes = []
@@ -154,15 +158,18 @@ def main(config_file, verbose, git, user, token, redis_list_number):
         discogs_git = git
 
     if discogs_user is None:
-        print(f"User name not supplied in either configuration or command line, exiting", file=sys.stderr)
+        print("User name not supplied in either configuration or command line, exiting",
+              file=sys.stderr)
         sys.exit(1)
 
     if discogs_token is None:
-        print(f"Token not supplied in either configuration or command line, exiting", file=sys.stderr)
+        print("Token not supplied in either configuration or command line, exiting",
+              file=sys.stderr)
         sys.exit(1)
 
     if discogs_git is None:
-        print(f"Git repository not supplied in either configuration or command line, exiting", file=sys.stderr)
+        print("Git repository not supplied in either configuration or command line, exiting",
+              file=sys.stderr)
         sys.exit(1)
 
     # verify there is a valid Git repository
@@ -227,7 +234,7 @@ def main(config_file, verbose, git, user, token, redis_list_number):
             # now first check the headers to see if it is OK to do more requests
             if r.status_code != 200:
                 if r.status_code == 401:
-                    print(f"Denied by Discogs, exiting", file=sys.stderr)
+                    print("Denied by Discogs, exiting", file=sys.stderr)
                     sys.exit(1)
                 elif r.status_code == 404:
                     # TODO: record discogs entries that have been removed
@@ -236,15 +243,18 @@ def main(config_file, verbose, git, user, token, redis_list_number):
                     if 'Retry-After' in r.headers:
                         try:
                             retry_after = int(r.headers['Retry-After'])
-                            print(f"Rate limiting, sleeping for {retry_after} seconds", file=sys.stderr)
+                            print(f"Rate limiting, sleeping for {retry_after} seconds",
+                                  file=sys.stderr)
                             time.sleep(retry_after)
                             sys.stderr.flush()
                         except:
-                            print(f"Rate limiting, sleeping for {default_sleep} seconds", file=sys.stderr)
+                            print(f"Rate limiting, sleeping for {default_sleep} seconds",
+                                  file=sys.stderr)
                             time.sleep(default_sleep)
                             sys.stderr.flush()
                     else:
-                        print(f"Rate limiting, sleeping for {default_sleep} seconds", file=sys.stderr)
+                        print(f"Rate limiting, sleeping for {default_sleep} seconds",
+                              file=sys.stderr)
                         time.sleep(default_sleep)
                         sys.stderr.flush()
 
