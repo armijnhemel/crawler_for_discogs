@@ -44,13 +44,15 @@ REDIS_LISTS = {1: 'discogs-1M', 2: 'discogs-2M', 3: 'discogs-3M',
 
 # process json: cleanup, sort, compare to already stored version
 def process_json(json_data, removes, git_directory, repo, remove_thumbnails=True):
-    for r in removes:
+    '''Helper function to cleanup and sort JSON obtained from Discogs,
+       write to a file and store in Git'''
+    for remove_item in removes:
         try:
-            if '/' in r:
-                key1, key2 = r.split('/', 1)
+            if '/' in remove_item:
+                key1, key2 = remove_item.split('/', 1)
                 del json_data[key1][key2]
             else:
-                del json_data[r]
+                del json_data[remove_item]
         except KeyError:
             pass
 
@@ -141,8 +143,8 @@ def main(config_file, verbose, git, user, token, redis_list_number):
         config = load(config_file, Loader=Loader)
         if 'fields' in config:
             if 'remove' in config['fields']:
-                for r in config['fields']['remove']:
-                    removes.append(r)
+                for remove_item in config['fields']['remove']:
+                    removes.append(remove_item)
     except (YAMLError, PermissionError, UnicodeDecodeError) as e:
         print(f"Cannot open configuration file, exiting, {e}", file=sys.stderr)
         sys.exit(1)
@@ -229,20 +231,21 @@ def main(config_file, verbose, git, user, token, redis_list_number):
 
         try:
             # grab stuff from Discogs
-            r = requests.get(f'https://api.discogs.com/releases/{identifier}', headers=headers)
+            request = requests.get(f'https://api.discogs.com/releases/{identifier}',
+                                   headers=headers)
 
             # now first check the headers to see if it is OK to do more requests
-            if r.status_code != 200:
-                if r.status_code == 401:
+            if request.status_code != 200:
+                if request.status_code == 401:
                     print("Denied by Discogs, exiting", file=sys.stderr)
                     sys.exit(1)
-                elif r.status_code == 404:
+                elif request.status_code == 404:
                     # TODO: record discogs entries that have been removed
                     pass
-                elif r.status_code == 429:
-                    if 'Retry-After' in r.headers:
+                elif request.status_code == 429:
+                    if 'Retry-After' in request.headers:
                         try:
-                            retry_after = int(r.headers['Retry-After'])
+                            retry_after = int(request.headers['Retry-After'])
                             print(f"Rate limiting, sleeping for {retry_after} seconds",
                                   file=sys.stderr)
                             time.sleep(retry_after)
@@ -261,8 +264,8 @@ def main(config_file, verbose, git, user, token, redis_list_number):
                 continue
 
             # in case there is no 429 response check the headers
-            if 'X-Discogs-Ratelimit-Remaining' in r.headers:
-                rate_limit = int(r.headers['X-Discogs-Ratelimit-Remaining'])
+            if 'X-Discogs-Ratelimit-Remaining' in request.headers:
+                rate_limit = int(request.headers['X-Discogs-Ratelimit-Remaining'])
             if rate_limit == 0:
                 # no more requests are allowed, so sleep for some
                 # time, max 60 seconds
@@ -275,7 +278,7 @@ def main(config_file, verbose, git, user, token, redis_list_number):
             else:
                 rate_limit_backoff = 5
 
-            json_data = r.json()
+            json_data = request.json()
             process_json(json_data, removes, discogs_git_directory, repo)
             current_identifier = None
         except Exception as e:
