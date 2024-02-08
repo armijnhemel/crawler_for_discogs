@@ -93,19 +93,21 @@ number and SHA1 in a tab separated format (release number and SHA1 hash) to an
 output file, for example:
 
 ```
-$ python3 discogs_xml_split.py -d ~/discogs-data/discogs_20231001_releases.xml.gz -r /tmp/september2023-hashes.txt
+$ python3 discogs_xml_split.py -d -d ~/discogs-data/discogs_20240201_releases.xml.gz -r ~/discogs-data/february_2024_release_numbers_and_hashes.txt
 ```
 
 It should be noted that the current implementation will run for quite some
 time:
 
 ```
-$ time python3 discogs_xml_split.py -d ~/discogs-data/discogs_20231001_releases.xml.gz -r /tmp/discogs_september2023_hashes.txt
+$ time python3 discogs_xml_split.py -d ~/discogs-data/discogs_20240201_releases.xml.gz -r ~/discogs-data/february_2024_release_numbers_and_hashes.txt
 
-real	186m42.637s
-user	185m53.505s
-sys	0m12.630s
+real	158m24.965s
+user	157m39.111s
+sys	0m10.797s
 ```
+
+although this also depends on your Linux and Python installation.
 
 As this script is typically only run once per month this is acceptable.
 Optimizations are likely possible but remember that the XML file that is
