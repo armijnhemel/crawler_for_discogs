@@ -47,6 +47,17 @@ REDIS_LISTS = {1: 'discogs-1M', 2: 'discogs-2M', 3: 'discogs-3M',
                52: 'discogs-52M', 53: 'discogs-53M', 54: 'discogs-54M',
                55: 'discogs-55M', 56: 'discogs-56M', 57: 'discogs-57M',
                58: 'discogs-58M', 59: 'discogs-59M', 60: 'discogs-60M',
+               61: 'discogs-61M', 62: 'discogs-62M', 63: 'discogs-63M',
+               64: 'discogs-64M', 65: 'discogs-65M', 66: 'discogs-66M',
+               67: 'discogs-67M', 68: 'discogs-68M', 69: 'discogs-69M',
+               70: 'discogs-70M', 71: 'discogs-71M', 72: 'discogs-72M',
+               73: 'discogs-73M', 74: 'discogs-74M', 75: 'discogs-75M',
+               76: 'discogs-76M', 77: 'discogs-77M', 78: 'discogs-78M',
+               79: 'discogs-79M', 80: 'discogs-80M', 81: 'discogs-81M',
+               82: 'discogs-82M', 83: 'discogs-83M', 84: 'discogs-84M',
+               85: 'discogs-85M', 86: 'discogs-86M', 87: 'discogs-87M',
+               88: 'discogs-88M', 89: 'discogs-89M', 90: 'discogs-90M',
+
 }
 
 # process json: cleanup, sort, compare to already stored version
@@ -137,8 +148,8 @@ def process_json(json_data, removes, git_directory, repo, remove_thumbnails=True
               type=click.Path('exists=True', path_type=pathlib.Path))
 @click.option('-u', '--user', help='User name (override config)')
 @click.option('-t', '--token', help='Token (override config)')
-@click.option('-l', '--list', 'redis_list_number', type=click.IntRange(min=1, max=60),
-              required=True, help='Redis list number (1-60)')
+@click.option('-l', '--list', 'redis_list_number', type=click.IntRange(min=1, max=90),
+              required=True, help='Redis list number (1-90)')
 def main(config_file, verbose, git, user, token, redis_list_number):
     # read the configuration file. This is in YAML format
     removes = []
