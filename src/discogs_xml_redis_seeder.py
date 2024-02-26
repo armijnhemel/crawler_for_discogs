@@ -23,6 +23,14 @@ REDIS_LISTS = {1: 'discogs-1M', 2: 'discogs-2M', 3: 'discogs-3M',
                31: 'discogs-31M', 32: 'discogs-32M', 33: 'discogs-33M',
                34: 'discogs-34M', 35: 'discogs-35M', 36: 'discogs-36M',
                37: 'discogs-37M', 38: 'discogs-38M', 39: 'discogs-39M',
+               40: 'discogs-40M', 41: 'discogs-41M', 42: 'discogs-42M',
+               40: 'discogs-40M', 41: 'discogs-41M', 42: 'discogs-42M',
+               43: 'discogs-43M', 44: 'discogs-44M', 45: 'discogs-45M',
+               46: 'discogs-46M', 47: 'discogs-47M', 48: 'discogs-48M',
+               49: 'discogs-49M', 50: 'discogs-50M', 51: 'discogs-51M',
+               52: 'discogs-52M', 53: 'discogs-53M', 54: 'discogs-54M',
+               55: 'discogs-55M', 56: 'discogs-56M', 57: 'discogs-57M',
+               58: 'discogs-58M', 59: 'discogs-59M', 60: 'discogs-60M',
 }
 
 
