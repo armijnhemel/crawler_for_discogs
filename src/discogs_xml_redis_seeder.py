@@ -37,7 +37,8 @@ REDIS_LISTS = {1: 'discogs-1M', 2: 'discogs-2M', 3: 'discogs-3M',
 @click.command(short_help='Queue release numbers from the Discogs XML into redis as tasks')
 @click.option('--new-result-file', '-n', 'new_result_file', required=True, help='new results file', type=click.Path(exists=True))
 @click.option('--old-result-file', '-o', 'old_result_file', help='old results file', type=click.Path(exists=True))
-def main(new_result_file, old_result_file):
+@click.option('--verbose', '-v', help='verbose (default: False)', is_flag=True, default=False)
+def main(new_result_file, old_result_file, verbose):
     # first check if redis is running or not
     try:
         redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True)
@@ -58,6 +59,9 @@ def main(new_result_file, old_result_file):
                     release_id = int(release_id)
                     old_releases.add((release_id, release_hash))
 
+        if verbose:
+            print(f"Found {len(old_releases)} old releases")
+
         new_releases = 0
         with redis_client.pipeline(transaction=False) as pipe:
             with open(new_result_file, 'r') as result_file:
@@ -70,12 +74,12 @@ def main(new_result_file, old_result_file):
                     pipe.rpush(REDIS_LISTS[list_nr], release_id)
                     new_releases += 1
             pipe.execute()
+            if verbose:
+                print(f"Queuing {new_releases} new/changed releases")
 
     except Exception as e:
         print("Cannot process dump file", e, file=sys.stderr)
         sys.exit(1)
-
-    print(f"Queuing {new_releases} releases")
 
 
 if __name__ == "__main__":
