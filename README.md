@@ -124,11 +124,11 @@ output of two different Discogs dump files they should be prcessed with the
 same script using the same libraries.
 
 The next step is actually seeding the releases that need to be crawled into
-the Redis queue. This can be done using the `discogs_xml_redis_seeder.py`
-script, for example:
+the Redis queue. This can be done using the `discogs_queue_seeder.py` script,
+for example:
 
 ```
-$ python3 discogs_xml_redis_seeder.py -n /tmp/discogs_september2023_hashes.txt
+$ python3 discogs_queue_seeder.py -n /tmp/discogs_september2023_hashes.txt
 ```
 
 The script takes two parameters (one optional):
