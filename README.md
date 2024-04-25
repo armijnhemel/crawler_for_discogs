@@ -7,7 +7,8 @@ stores it as (sorted) JSON in a Git repository.
 
 Each release in Discogs has a release number. The crawling queue is a Redis
 queue containing the release numbers for which the release data needs to be
-fetched by workers.
+fetched by workers. Note: the dependency on Redis will likely be replaced soon
+because of the recent Redis license change.
 
 As soon as a worker has fetched a release number it downloads the relevant
 data via the Discogs API in JSON format. The JSON data is then cleaned up to
