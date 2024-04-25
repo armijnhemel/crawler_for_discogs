@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 #
-# Copyright 2023-2024 - Armijn Hemel
+# Copyright - Armijn Hemel
 
 import math
 import sys

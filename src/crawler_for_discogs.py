@@ -4,7 +4,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 # Licensed under Apache 2.0, see LICENSE file for details
-# Copyright 2023-2024 - Armijn Hemel
+# Copyright - Armijn Hemel
 
 import json
 import pathlib
