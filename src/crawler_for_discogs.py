@@ -57,7 +57,9 @@ REDIS_LISTS = {1: 'discogs-1M', 2: 'discogs-2M', 3: 'discogs-3M',
                82: 'discogs-82M', 83: 'discogs-83M', 84: 'discogs-84M',
                85: 'discogs-85M', 86: 'discogs-86M', 87: 'discogs-87M',
                88: 'discogs-88M', 89: 'discogs-89M', 90: 'discogs-90M',
-
+               91: 'discogs-91M', 92: 'discogs-92M', 93: 'discogs-93M',
+               94: 'discogs-94M', 95: 'discogs-95M', 96: 'discogs-96M',
+               97: 'discogs-97M', 98: 'discogs-98M', 99: 'discogs-99M',
 }
 
 # process json: cleanup, sort, compare to already stored version

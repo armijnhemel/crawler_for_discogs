@@ -66,7 +66,7 @@ it easier to manage.
 
 #### Git drawback: size
 
-The Discogs database consists of many files (more than 28M if artists, labels
+The Discogs database consists of many files (more than 31M if artists, labels
 and other data is also taken into account). There might be performance issues.
 A solution could be to use Git submodules and use multiple repositories instead
 of a single one.
@@ -171,7 +171,7 @@ The parameters are:
 * Discogs user name (if not provided in the configuration file)
 * Discogs token (if not provided in the configuration file)
 * path to Git repository (if not provided in the configration file)
-* Redis list number (1-39)
+* Redis list number (1-99)
 
 Currently both the Git repository and the Redis queue are assumed to be local
 but this will eventually be changed so the crawlers can be distributed and
