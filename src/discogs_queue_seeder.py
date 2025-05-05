@@ -43,6 +43,10 @@ REDIS_LISTS = {1: 'discogs-1M', 2: 'discogs-2M', 3: 'discogs-3M',
                91: 'discogs-91M', 92: 'discogs-92M', 93: 'discogs-93M',
                94: 'discogs-94M', 95: 'discogs-95M', 96: 'discogs-96M',
                97: 'discogs-97M', 98: 'discogs-98M', 99: 'discogs-99M',
+               100: 'discogs-100M', 101: 'discogs-101M', 102: 'discogs-102M',
+               103: 'discogs-103M', 104: 'discogs-104M', 105: 'discogs-105M',
+               106: 'discogs-106M', 107: 'discogs-107M', 108: 'discogs-108M',
+               109: 'discogs-109M', 110: 'discogs-110M', 111: 'discogs-111M',
 }
 
 
