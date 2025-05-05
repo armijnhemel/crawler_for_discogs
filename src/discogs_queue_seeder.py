@@ -40,7 +40,6 @@ REDIS_LISTS = {1: 'discogs-1M', 2: 'discogs-2M', 3: 'discogs-3M',
                82: 'discogs-82M', 83: 'discogs-83M', 84: 'discogs-84M',
                85: 'discogs-85M', 86: 'discogs-86M', 87: 'discogs-87M',
                88: 'discogs-88M', 89: 'discogs-89M', 90: 'discogs-90M',
-               88: 'discogs-88M', 89: 'discogs-89M', 90: 'discogs-90M',
                91: 'discogs-91M', 92: 'discogs-92M', 93: 'discogs-93M',
                94: 'discogs-94M', 95: 'discogs-95M', 96: 'discogs-96M',
                97: 'discogs-97M', 98: 'discogs-98M', 99: 'discogs-99M',
@@ -48,8 +47,10 @@ REDIS_LISTS = {1: 'discogs-1M', 2: 'discogs-2M', 3: 'discogs-3M',
 
 
 @click.command(short_help='Queue release numbers from the Discogs XML into redis as tasks')
-@click.option('--new-result-file', '-n', 'new_result_file', required=True, help='new results file', type=click.Path(exists=True))
-@click.option('--old-result-file', '-o', 'old_result_file', help='old results file', type=click.Path(exists=True))
+@click.option('--new-result-file', '-n', 'new_result_file', required=True,
+              help='new results file', type=click.Path(exists=True))
+@click.option('--old-result-file', '-o', 'old_result_file', help='old results file',
+              type=click.Path(exists=True))
 @click.option('--verbose', '-v', help='verbose (default: False)', is_flag=True, default=False)
 def main(new_result_file, old_result_file, verbose):
     # first check if redis is running or not
